@@ -7,6 +7,8 @@ import {createTripCostTemplate} from './view/trip-cost.js';
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createTripSortTemplate} from './view/trip-sort.js';
 
+import './mock/point.js';
+
 const POINTS_COUNT = 3;
 const siteBodyElement = document.querySelector('.page-body');
 
