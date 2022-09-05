@@ -6,29 +6,47 @@ export const createPointTeplate = (point) => {
   const eventDay = dayjs(startTime).format('MMM D');
   const eventDayFormat = dayjs(startTime).format('YYYY-MM-DD');
   const startHour = dayjs(startTime).format('HH:mm');
+  const startHourFormat = dayjs(startTime).format('YYYY-MM-DDTHH:mm');
   const endHour = dayjs(endTime).format('HH:mm');
+  const endHourFormat = dayjs(endTime).format('YYYY-MM-DDTHH:mm');
 
   const calculateDuration = () => {
-    let durationTime;
-
     if ((endTime - startTime) < 3600000) {
-      durationTime = `${ (endTime - startTime) / 60000 }M`;
+      return `${ (endTime - startTime) / 60000 }M`;
     }
     if ((endTime - startTime) >= 3600000 & (endTime - startTime) < 86400000) {
-      durationTime = `${Math.floor( (endTime - startTime) / 3600000 )}H ${Math.ceil((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
+      return `${Math.floor( (endTime - startTime) / 3600000 )}H ${Math.ceil((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
     }
     if ((endTime - startTime) >= 86400000) {
-      durationTime = `${Math.floor( (endTime - startTime) / 86400000 )}D ${ Math.ceil((((endTime - startTime) / 86400000) - Math.floor((endTime - startTime) / 86400000)) * 24)}H ${Math.ceil((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
+      return `${Math.floor( (endTime - startTime) / 86400000 )}D ${ Math.ceil((((endTime - startTime) / 86400000) - Math.floor((endTime - startTime) / 86400000)) * 24)}H ${Math.ceil((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
     }
-
-    return durationTime;
   };
 
-  const addFavoriteClass = () => {
-    if (isFavorite) {
-      return ' event__favorite-btn--active';
-    }
-    return '';
+  const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
+
+  const renderOffers = () => {
+    let offersMarkup = '';
+    offers.offers.forEach((offer) => {
+      const {price, title} = offer;
+
+      offersMarkup += `
+      <li class="event__offer">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </li>
+      `;
+    });
+    return offersMarkup;
+  };
+
+  const calculatePrice = (prices) => {
+    let result = 0;
+    prices.offers.forEach((price) => {
+      result +=  price.price;
+    });
+
+    return result;
   };
 
   return `
@@ -38,27 +56,23 @@ export const createPointTeplate = (point) => {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">Taxi ${destination}</h3>
+    <h3 class="event__title">${type} ${destination}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T10:30">${startHour}</time>
+        <time class="event__start-time" datetime="${startHourFormat}">${startHour}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T11:00">${endHour}</time>
+        <time class="event__end-time" datetime="${endHourFormat}">${endHour}</time>
       </p>
       <p class="event__duration">${calculateDuration()}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">20</span>
+      &euro;&nbsp;<span class="event__price-value">${calculatePrice(offers)}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">Order Uber</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">20</span>
-      </li>
+      ${renderOffers()}
     </ul>
-    <button class="event__favorite-btn${addFavoriteClass()}" type="button">
+    <button class="event__favorite-btn${favoriteClassName}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
         <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
