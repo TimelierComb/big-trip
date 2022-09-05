@@ -7,9 +7,13 @@ import {createTripCostTemplate} from './view/trip-cost.js';
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createTripSortTemplate} from './view/trip-sort.js';
 
-import './mock/point.js';
+import {generatePoint} from './mock/mock-point.js';
+
 
 const POINTS_COUNT = 3;
+const points = Array.from({length: POINTS_COUNT}, generatePoint);
+console.log(points);
+
 const siteBodyElement = document.querySelector('.page-body');
 
 const render = (container, template, place = 'beforeend') => {
@@ -36,5 +40,5 @@ render(eventListElement, createEditPointTemplate());
 render(eventListElement, createNewPointTemplate());
 
 for (let i = 0; i < POINTS_COUNT; i++) {
-  render(eventListElement, createPointTeplate());
+  render(eventListElement, createPointTeplate(points[i]));
 }

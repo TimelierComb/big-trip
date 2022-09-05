@@ -77,21 +77,28 @@ const generateOffer = () => {
 
 const generateDate = () => {
   const maxDaysGap = 3;
+  const maxMinutesGap = 180;
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const minutesGap = getRandomInteger(-maxMinutesGap, maxMinutesGap);
 
-  return dayjs().add(daysGap, 'day').toDate();
+  return dayjs().add(daysGap, 'day').add(minutesGap, 'minute').toDate();
 };
 
 const generatePoint = () => {
+  const firsDate = generateDate();
+  const secondDate = generateDate();
+
+  const datas = Array.of(firsDate, secondDate).sort((a, b) => a - b);
+
   return {
     type: generateType(),
     destination: generateCity(),
     offers: generateOffer(),
     info: generateInfo(),
-    startTime: generateDate(),
-    endTime: generateDate(),
+    startTime: datas[0],
+    endTime: datas[1],
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };
 
-console.log(generatePoint());
+export {generatePoint};
