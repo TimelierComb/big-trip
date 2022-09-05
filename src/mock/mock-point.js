@@ -43,6 +43,14 @@ const INFOS = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
+const TITLES = [
+  'Add luggage',
+  'Swicth to comfort',
+  'Add meal',
+  'Choose seats',
+  'Travel by train',
+];
+
 const generateType = () => POINT_TYPES[getRandomInteger(0, POINT_TYPES.length - 1)];
 
 const generateCity = () => CITIES[getRandomInteger(0, CITIES.length - 1)];
@@ -60,18 +68,24 @@ const generateInfo = () => {
   };
 };
 
+const generateTitle = () => TITLES[getRandomInteger(0, TITLES.length)]
+
 const generateOffer = () => {
+  const MIN_PRICE = 10;
+  const MAX_PRICE = 100;
+
+  return {
+    title: generateTitle(),
+    price: getRandomInteger(MIN_PRICE, MAX_PRICE),
+  };
+};
+
+const generateOffers = () => {
+  const offers = Array.from({length: getRandomInteger(0, 5)}, generateOffer)
+
   return {
     type: generateType(),
-    offers: [
-      {
-        title: 'Upgrade to a business class',
-        price: 120,
-      }, {
-        title: 'Choose the radio station',
-        price: 60,
-      },
-    ],
+    offers,
   };
 };
 
@@ -93,7 +107,7 @@ const generatePoint = () => {
   return {
     type: generateType(),
     destination: generateCity(),
-    offers: generateOffer(),
+    offers: generateOffers(),
     info: generateInfo(),
     startTime: datas[0],
     endTime: datas[1],
