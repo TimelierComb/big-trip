@@ -68,7 +68,7 @@ const generateInfo = () => {
   };
 };
 
-const generateTitle = () => TITLES[getRandomInteger(0, TITLES.length)]
+const generateTitle = () => TITLES[getRandomInteger(0, TITLES.length - 1)];
 
 const generateOffer = () => {
   const MIN_PRICE = 10;
@@ -81,7 +81,7 @@ const generateOffer = () => {
 };
 
 const generateOffers = () => {
-  const offers = Array.from({length: getRandomInteger(0, 5)}, generateOffer)
+  const offers = Array.from({length: getRandomInteger(0, 5)}, generateOffer);
 
   return {
     type: generateType(),

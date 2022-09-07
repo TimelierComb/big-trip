@@ -24,21 +24,16 @@ export const createPointTeplate = (point) => {
 
   const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
 
-  const renderOffers = () => {
-    let offersMarkup = '';
-    offers.offers.forEach((offer) => {
-      const {price, title} = offer;
-
-      offersMarkup += `
-      <li class="event__offer">
-        <span class="event__offer-title">${title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
-      </li>
-      `;
-    });
-    return offersMarkup;
-  };
+  const createOffersTemplate = (specials) =>  `
+  <ul class="event__selected-offers">
+    ${specials.map((offer) => `
+    <li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`).join('')}
+  </ul>
+  `;
 
   const calculatePrice = (prices) => {
     let result = 0;
@@ -69,9 +64,7 @@ export const createPointTeplate = (point) => {
       &euro;&nbsp;<span class="event__price-value">${calculatePrice(offers)}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
-    <ul class="event__selected-offers">
-      ${renderOffers()}
-    </ul>
+    ${createOffersTemplate(offers.offers)}
     <button class="event__favorite-btn${favoriteClassName}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
