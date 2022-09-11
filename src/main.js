@@ -1,5 +1,4 @@
-import {createNewPointTemplate} from './view/add-new-point.js';
-import {createEditPointTemplate} from './view/edit-point.js';
+import {createNewPointTemplate} from './view/edit-point.js';
 import {createFiltersTemplate} from './view/filters.js';
 import {createMenuNavigationTemplate} from './view/menu-navigation.js';
 import {createPointTeplate} from './view/point.js';
@@ -10,7 +9,7 @@ import {createTripSortTemplate} from './view/trip-sort.js';
 import {generatePoint} from './mock/mock-point.js';
 
 
-const POINTS_COUNT = 3;
+const POINTS_COUNT = 4;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
 console.log(points);
 
@@ -21,7 +20,7 @@ const render = (container, template, place = 'beforeend') => {
 };
 
 const tripMainElement = siteBodyElement.querySelector('.trip-main');
-render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
+render(tripMainElement, createTripInfoTemplate(points.slice(1, points.length)), 'afterbegin');
 
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
 render(tripInfoElement, createTripCostTemplate());
@@ -36,9 +35,9 @@ const eventsElement = siteBodyElement.querySelector('.trip-events');
 render(eventsElement, createTripSortTemplate());
 
 const eventListElement = eventsElement.querySelector('.trip-events__list');
-render(eventListElement, createEditPointTemplate());
-render(eventListElement, createNewPointTemplate());
 
-for (let i = 0; i < POINTS_COUNT; i++) {
+render(eventListElement, createNewPointTemplate(points[0]));
+
+for (let i = 1; i < POINTS_COUNT; i++) {
   render(eventListElement, createPointTeplate(points[i]));
 }

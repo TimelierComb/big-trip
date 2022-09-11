@@ -1,14 +1,7 @@
-import dayjs from 'dayjs';
+import {convertDate, calculatePrice} from '../utils.js';
 
 export const createPointTeplate = (point) => {
   const {destination, type, startTime, endTime, isFavorite, offers} = point;
-
-  const eventDay = dayjs(startTime).format('MMM D');
-  const eventDayFormat = dayjs(startTime).format('YYYY-MM-DD');
-  const startHour = dayjs(startTime).format('HH:mm');
-  const startHourFormat = dayjs(startTime).format('YYYY-MM-DDTHH:mm');
-  const endHour = dayjs(endTime).format('HH:mm');
-  const endHourFormat = dayjs(endTime).format('YYYY-MM-DDTHH:mm');
 
   const calculateDuration = () => {
     if ((endTime - startTime) < 3600000) {
@@ -24,44 +17,30 @@ export const createPointTeplate = (point) => {
 
   const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
 
-  const renderOffers = () => {
-    let offersMarkup = '';
-    offers.offers.forEach((offer) => {
-      const {price, title} = offer;
-
-      offersMarkup += `
-      <li class="event__offer">
-        <span class="event__offer-title">${title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
-      </li>
-      `;
-    });
-    return offersMarkup;
-  };
-
-  const calculatePrice = (prices) => {
-    let result = 0;
-    prices.offers.forEach((price) => {
-      result +=  price.price;
-    });
-
-    return result;
-  };
+  const createOffersTemplate = (specials) =>  `
+  <ul class="event__selected-offers">
+    ${specials.map((offer) => `
+    <li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`).join('')}
+  </ul>
+  `;
 
   return `
   <li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${eventDayFormat}">${eventDay}</time>
+    <time class="event__date" datetime="${convertDate(startTime, 'YYYY-MM-DD')}">${convertDate(startTime, 'MMM D')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${destination}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${startHourFormat}">${startHour}</time>
+        <time class="event__start-time" datetime="${convertDate(startTime, 'YYYY-MM-DDTHH:mm')}">${convertDate(startTime, 'HH:mm')}</time>
         &mdash;
-        <time class="event__end-time" datetime="${endHourFormat}">${endHour}</time>
+        <time class="event__end-time" datetime="${convertDate(endTime, 'YYYY-MM-DDTHH:mm')}">${convertDate(endTime, 'HH:mm')}</time>
       </p>
       <p class="event__duration">${calculateDuration()}</p>
     </div>
@@ -69,9 +48,7 @@ export const createPointTeplate = (point) => {
       &euro;&nbsp;<span class="event__price-value">${calculatePrice(offers)}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
-    <ul class="event__selected-offers">
-      ${renderOffers()}
-    </ul>
+    ${createOffersTemplate(offers.offers)}
     <button class="event__favorite-btn${favoriteClassName}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
