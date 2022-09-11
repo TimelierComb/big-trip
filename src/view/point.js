@@ -1,14 +1,7 @@
-import dayjs from 'dayjs';
+import {convertDate, calculatePrice} from '../utils.js';
 
 export const createPointTeplate = (point) => {
   const {destination, type, startTime, endTime, isFavorite, offers} = point;
-
-  const eventDay = dayjs(startTime).format('MMM D');
-  const eventDayFormat = dayjs(startTime).format('YYYY-MM-DD');
-  const startHour = dayjs(startTime).format('HH:mm');
-  const startHourFormat = dayjs(startTime).format('YYYY-MM-DDTHH:mm');
-  const endHour = dayjs(endTime).format('HH:mm');
-  const endHourFormat = dayjs(endTime).format('YYYY-MM-DDTHH:mm');
 
   const calculateDuration = () => {
     if ((endTime - startTime) < 3600000) {
@@ -35,28 +28,19 @@ export const createPointTeplate = (point) => {
   </ul>
   `;
 
-  const calculatePrice = (prices) => {
-    let result = 0;
-    prices.offers.forEach((price) => {
-      result +=  price.price;
-    });
-
-    return result;
-  };
-
   return `
   <li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${eventDayFormat}">${eventDay}</time>
+    <time class="event__date" datetime="${convertDate(startTime, 'YYYY-MM-DD')}">${convertDate(startTime, 'MMM D')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${destination}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${startHourFormat}">${startHour}</time>
+        <time class="event__start-time" datetime="${convertDate(startTime, 'YYYY-MM-DDTHH:mm')}">${convertDate(startTime, 'HH:mm')}</time>
         &mdash;
-        <time class="event__end-time" datetime="${endHourFormat}">${endHour}</time>
+        <time class="event__end-time" datetime="${convertDate(endTime, 'YYYY-MM-DDTHH:mm')}">${convertDate(endTime, 'HH:mm')}</time>
       </p>
       <p class="event__duration">${calculateDuration()}</p>
     </div>
