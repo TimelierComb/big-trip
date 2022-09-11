@@ -1,7 +1,7 @@
-import {convertDate, calculatePrice} from '../utils.js';
+import {convertDate} from '../utils.js';
 
 export const createPointTeplate = (point) => {
-  const {destination, type, startTime, endTime, isFavorite, offers} = point;
+  const {destination, type, startTime, endTime, isFavorite, offers, basePrice} = point;
 
   const calculateDuration = () => {
     if ((endTime - startTime) < 3600000) {
@@ -13,6 +13,15 @@ export const createPointTeplate = (point) => {
     if ((endTime - startTime) >= 86400000) {
       return `${Math.floor( (endTime - startTime) / 86400000 )}D ${ Math.ceil((((endTime - startTime) / 86400000) - Math.floor((endTime - startTime) / 86400000)) * 24)}H ${Math.ceil((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
     }
+  };
+
+  const calculatePrice = (prices) => {
+    let result = basePrice;
+    prices.offers.forEach((price) => {
+      result +=  price.price;
+    });
+
+    return result;
   };
 
   const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';

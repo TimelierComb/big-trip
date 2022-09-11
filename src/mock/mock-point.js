@@ -37,6 +37,7 @@ const generatePoint = () => {
   const datas = Array.from({length: 2}, generateDate).sort((a, b) => a - b);
 
   return {
+    basePrice: getRandomInteger(MIN_PRICE, MAX_PRICE),
     type: generateParameter(POINT_TYPES),
     destination: generateParameter(CITIES),
     offers: generateOffers(),

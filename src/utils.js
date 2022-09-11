@@ -19,12 +19,3 @@ export const generateDate = () => {
 export const generateParameter = (array) => array[getRandomInteger(0, array.length - 1)];
 
 export const convertDate = (time, format) => dayjs(time).format(format);
-
-export const calculatePrice = (prices) => {
-  let result = 0;
-  prices.offers.forEach((price) => {
-    result +=  price.price;
-  });
-
-  return result;
-};
