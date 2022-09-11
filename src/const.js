@@ -15,12 +15,12 @@ export const POINT_TYPES = [
 ];
 
 export const CITIES = [
-  'Los Angeles',
+  'Los&nbsp;Angeles',
   'Berlin',
   'Rome',
   'Florence',
-  'New York',
-  'Miamy',
+  'New&nbsp;York',
+  'Miami',
 ];
 
 export const INFOS = [

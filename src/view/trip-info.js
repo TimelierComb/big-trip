@@ -1,7 +1,18 @@
 import {convertDate} from '../utils.js';
 
 export const createTripInfoTemplate = (points) => {
-  const createRoute = () => points.map((point) => point.destination).reverse().join('&nbsp;&mdash;&nbsp;');
+  const citiesList = [];
+
+  const createRoute = () => points.map((point) => {
+    const result = citiesList[citiesList.length - 1] === point.destination
+      ? ''
+      : point.destination;
+
+    citiesList.push(point.destination);
+
+
+    return result;
+  }).filter((point) => point !== '').reverse().join(' &mdash;&nbsp;');
 
   const firsDate = points[points.length - 1].startTime;
   const secondDate = points[0].endTime;

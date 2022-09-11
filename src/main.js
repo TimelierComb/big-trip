@@ -9,7 +9,7 @@ import {createTripSortTemplate} from './view/trip-sort.js';
 import {generatePoint} from './mock/mock-point.js';
 
 
-const POINTS_COUNT = 4;
+const POINTS_COUNT = 20;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
 console.log(points);
 
@@ -23,7 +23,7 @@ const tripMainElement = siteBodyElement.querySelector('.trip-main');
 render(tripMainElement, createTripInfoTemplate(points.slice(1, points.length)), 'afterbegin');
 
 const tripInfoElement = tripMainElement.querySelector('.trip-info');
-render(tripInfoElement, createTripCostTemplate());
+render(tripInfoElement, createTripCostTemplate(points));
 
 const navigationElement = tripMainElement.querySelector('.trip-controls__navigation');
 render(navigationElement, createMenuNavigationTemplate());
