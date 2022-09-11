@@ -9,7 +9,7 @@ import {createTripSortTemplate} from './view/trip-sort.js';
 import {generatePoint} from './mock/mock-point.js';
 
 
-const POINTS_COUNT = 4;
+const POINTS_COUNT = 20;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
 console.log(points);
 
