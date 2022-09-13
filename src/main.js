@@ -1,3 +1,4 @@
+import {render} from './utils.js';
 import {createNewPointTemplate} from './view/edit-point.js';
 import {createFiltersTemplate} from './view/filters.js';
 import {createMenuNavigationTemplate} from './view/menu-navigation.js';
@@ -11,13 +12,8 @@ import {generatePoint} from './mock/mock-point.js';
 
 const POINTS_COUNT = 20;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
-console.log(points);
 
 const siteBodyElement = document.querySelector('.page-body');
-
-const render = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const tripMainElement = siteBodyElement.querySelector('.trip-main');
 render(tripMainElement, createTripInfoTemplate(points.slice(1, points.length)), 'afterbegin');
