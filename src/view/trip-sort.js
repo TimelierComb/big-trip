@@ -29,22 +29,22 @@ export const createTripSortTemplate = () => `<form class="trip-events__trip-sort
 
 <ul class="trip-events__list"></ul>`;
 
-// export default class TripSortView {
-//   #element = null;
+export default class TripSortView {
+  #element = null;
 
-//   get template() {
-//     return createTripSortTemplate;
-//   }
+  get template() {
+    return createTripSortTemplate;
+  }
 
-//   get element() {
-//     if (!this.#element) {
-//       this.#element = createElement(this.template);
-//     }
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
 
-//     return this.#element;
-//   }
+    return this.#element;
+  }
 
-//   removeElement() {
-//     this.#element = null;
-//   }
-// }
+  removeElement() {
+    this.#element = null;
+  }
+}
