@@ -26,13 +26,24 @@ const renderPoint = (pointListElement, point) => {
     pointListElement.replaceChild(pointComponent.element, editPointComponent.element);
   };
 
+  const onEscKeydown = (evt) => {
+    if(evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeydown);
+    }
+  };
+
   pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
+
+    document.addEventListener('keydown', onEscKeydown);
   });
 
   editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeydown);
   });
 
   render(pointListElement, pointComponent.element, RenderPosition.BEFOREEND);
