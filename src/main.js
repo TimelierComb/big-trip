@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition} from './render.js';
 import EditPointView from './view/edit-point.js';
 import FiltersView from './view/filters.js';
 import NavigationView from './view/menu-navigation.js';

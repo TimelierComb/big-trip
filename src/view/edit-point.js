@@ -1,5 +1,6 @@
 import {CITIES, POINT_TYPES, TITLES, MIN_PRICE, MAX_PRICE} from '../const.js';
-import {convertDate, getRandomInteger, createElement} from '../utils.js';
+import {convertDate, getRandomInteger} from '../utils.js';
+import {createElement} from '../render.js';
 
 const createTypesTemplate = (items, type) =>  (
   `<fieldset class="event__type-group">

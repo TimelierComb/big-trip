@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import {createElement} from '../render.js';
 
 export const createFiltersTemplate = () => (
   `<div class="trip-controls__filters">

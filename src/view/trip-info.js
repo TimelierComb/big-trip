@@ -1,4 +1,5 @@
-import {convertDate, createElement} from '../utils.js';
+import {convertDate} from '../utils.js';
+import {createElement} from '../render.js';
 
 const createTripInfoTemplate = (points) => {
 

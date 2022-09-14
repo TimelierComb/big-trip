@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import {createElement} from '../render.js';
 
 const createTripCostTemplate = (points) => {
 
