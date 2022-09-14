@@ -1,28 +1,61 @@
-import {convertDate} from '../utils.js';
+import {convertDate, createElement} from '../utils.js';
 
-export const createTripInfoTemplate = (points) => {
-  const citiesList = [];
+const createTripInfoTemplate = (points) => {
 
-  const createRoute = () => points.map((point) => {
-    const result = citiesList[citiesList.length - 1] === point.destination
-      ? ''
-      : point.destination;
+  const createRoute = () => {
+    if (points.length > 3) {
+      return `${points[points.length - 1].destination}&nbsp;&mdash;&nbsp;&#x2026;&nbsp;&mdash;&nbsp;${points[0].destination}`;
+    } else {
+      const citiesList = [];
 
-    citiesList.push(point.destination);
+      return points.map((point) => {
+        const result = citiesList[citiesList.length - 1] === point.destination
+          ? ''
+          : point.destination;
+
+        citiesList.push(point.destination);
 
 
-    return result;
-  }).filter((point) => point !== '').reverse().join(' &mdash;&nbsp;');
+        return result;
+      }).filter((point) => point !== '').reverse().join(' &mdash;&nbsp;');
+    }
+  };
+
 
   const firsDate = points[points.length - 1].startTime;
   const secondDate = points[0].endTime;
 
-  return `
-    <section class="trip-main__trip-info  trip-info">
+  return (
+    `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
         <h1 class="trip-info__title">${createRoute()}</h1>
         <p class="trip-info__dates">${convertDate(firsDate, 'MMM DD')}&nbsp;&mdash;&nbsp;${convertDate(secondDate, 'DD')}</p>
       </div>
-    </section>
-  `;
+    </section>`
+  );
 };
+
+export default class TripInfoView {
+  #element = null;
+  #datas = null;
+
+  constructor(datas) {
+    this.#datas = datas;
+  }
+
+  get template() {
+    return createTripInfoTemplate(this.#datas);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
