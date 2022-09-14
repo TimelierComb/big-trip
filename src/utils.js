@@ -1,17 +1,13 @@
 import dayjs from 'dayjs';
 
-const RenderPosition = {
+export const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
   AFTEREND: 'afterend',
 };
 
-export const render = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
-
-export const renderElement = (container, element, place) => {
+export const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.BEFOREBEGIN:
       container.before(element);
