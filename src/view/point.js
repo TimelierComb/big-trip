@@ -1,7 +1,7 @@
 import {convertDate} from '../utils.js';
 import {createElement} from '../render.js';
 
-const calculateDuration = (endTime, startTime) => {
+const calculateDuration = (startTime, endTime) => {
   if ((endTime - startTime) < 3600000) {
     return `${ (endTime - startTime) / 60000 }M`;
   }
