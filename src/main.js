@@ -14,6 +14,30 @@ import {generatePoint} from './mock/mock-point.js';
 const POINTS_COUNT = 20;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
 
+const renderPoint = (pointListElement, point) => {
+  const pointComponent = new PointView(point);
+  const editPointComponent = new EditPointView(point);
+
+  const replaceCardToForm = () => {
+    pointListElement.replaceChild(editPointComponent.element, pointComponent.element);
+  };
+
+  const replaceFormToCard = () => {
+    pointListElement.replaceChild(pointComponent.element, editPointComponent.element);
+  };
+
+  pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
+  });
+
+  editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+  });
+
+  render(pointListElement, pointComponent.element, RenderPosition.BEFOREEND);
+};
+
 const siteBodyElement = document.querySelector('.page-body');
 const tripMainElement = siteBodyElement.querySelector('.trip-main');
 
@@ -36,8 +60,6 @@ render(eventsElement, new TripSortView().element, RenderPosition.BEFOREEND);
 const tripListComponent = new TripListView();
 render(eventsElement, tripListComponent.element, RenderPosition.BEFOREEND);
 
-render(tripListComponent.element, new EditPointView(points[0]).element, RenderPosition.BEFOREEND);
-
 for (let i = 1; i < POINTS_COUNT; i++) {
-  render(tripListComponent.element, new PointView(points[i]).element, RenderPosition.BEFOREEND);
+  renderPoint(tripListComponent.element, points[i]);
 }
