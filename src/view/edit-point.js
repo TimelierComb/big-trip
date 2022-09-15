@@ -68,7 +68,7 @@ const createPhotosTemplate = (images) => `
 
 const createOpenFormButtonTemplate = () => (
   `<button class="event__rollup-btn" type="button">
-    <span class="visually-hidden">Open event</span>
+    <span class="visually-hidden">Close event</span>
   </button>`
 );
 
