@@ -9,10 +9,12 @@ import TripSortView from './view/trip-sort.js';
 import TripListView from './view/trip-list.js';
 
 import {generatePoint} from './mock/mock-point.js';
+import {generateFilters} from './mock/mock-filters.js';
 
 
 const POINTS_COUNT = 20;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
+const filters = generateFilters(points);
 
 const renderPoint = (pointListElement, point) => {
   const pointComponent = new PointView(point);
@@ -63,7 +65,7 @@ render(navigationElement, NavigationComponenet.element, RenderPosition.BEFOREEND
 
 const filtersElement = tripMainElement.querySelector('.trip-controls__filters');
 
-render(filtersElement, new FiltersView().element, RenderPosition.BEFOREEND);
+render(filtersElement, new FiltersView(filters).element, RenderPosition.BEFOREEND);
 
 const eventsElement = siteBodyElement.querySelector('.trip-events');
 render(eventsElement, new TripSortView().element, RenderPosition.BEFOREEND);
