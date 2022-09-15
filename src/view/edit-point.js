@@ -66,6 +66,12 @@ const createPhotosTemplate = (images) => `
   </div>
 `;
 
+const createOpenFormButtonTemplate = () => (
+  `<button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`
+);
+
 const POINT_BLANK = {
   destination : '',
   type : POINT_TYPES[0],
@@ -83,7 +89,7 @@ const POINT_BLANK = {
 };
 
 const createNewPointTemplate = (point) => {
-  const {destination, type, startTime, info, endTime, offers} = point;
+  const {destination, type, startTime, info, endTime, offers, basePrice} = point;
 
   return (
     `<li class="trip-events__item">
@@ -126,11 +132,12 @@ const createNewPointTemplate = (point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-2" type="text" name="event-price" value="">
+            <input class="event__input  event__input--price" id="event-price-2" type="text" name="event-price" value="${basePrice === ''? '': basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__reset-btn" type="reset">${destination === ''? 'Cancel' : 'Delete'}</button>
+          ${destination === ''? '' : createOpenFormButtonTemplate()}
         </header>
         <section class="event__details">
           ${createOffersTemplate(TITLES, offers)}
