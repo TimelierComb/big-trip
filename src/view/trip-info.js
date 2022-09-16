@@ -23,8 +23,8 @@ const createTripInfoTemplate = (points) => {
   };
 
 
-  const firsDate = points[points.length - 1].startTime;
-  const secondDate = points[0].endTime;
+  const firsDate = points[0].startTime;
+  const secondDate = points[points.length - 1].endTime;
 
   return (
     `<section class="trip-main__trip-info  trip-info">

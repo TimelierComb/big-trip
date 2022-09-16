@@ -7,12 +7,13 @@ import TripCostView from './view/trip-cost.js';
 import TripInfoView from './view/trip-info.js';
 import TripSortView from './view/trip-sort.js';
 import TripListView from './view/trip-list.js';
+import NoPointsView from './view/no-points.js';
 
 import {generatePoint} from './mock/mock-point.js';
 import {generateFilters} from './mock/mock-filters.js';
 
 
-const POINTS_COUNT = 20;
+const POINTS_COUNT = 22;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
 const filters = generateFilters(points);
 
@@ -57,11 +58,7 @@ const renderPoint = (pointListElement, point) => {
 
 const siteBodyElement = document.querySelector('.page-body');
 const tripMainElement = siteBodyElement.querySelector('.trip-main');
-
-const tripInfoComponent = new TripInfoView(points);
-render(tripMainElement, tripInfoComponent.element, RenderPosition.AFTERBEGIN);
-
-render(tripInfoComponent.element, new TripCostView(points).element, RenderPosition.BEFOREEND);
+const eventsElement = siteBodyElement.querySelector('.trip-events');
 
 const navigationElement = tripMainElement.querySelector('.trip-controls__navigation');
 const NavigationComponenet = new NavigationView();
@@ -69,14 +66,25 @@ render(navigationElement, NavigationComponenet.element, RenderPosition.BEFOREEND
 
 const filtersElement = tripMainElement.querySelector('.trip-controls__filters');
 
-render(filtersElement, new FiltersView(filters).element, RenderPosition.BEFOREEND);
+const filtersComponent = new FiltersView(filters);
 
-const eventsElement = siteBodyElement.querySelector('.trip-events');
-render(eventsElement, new TripSortView().element, RenderPosition.BEFOREEND);
+render(filtersElement, filtersComponent.element, RenderPosition.BEFOREEND);
 
-const tripListComponent = new TripListView();
-render(eventsElement, tripListComponent.element, RenderPosition.BEFOREEND);
+if (points.length === 0) {
+  const noPointsComponent = new NoPointsView();
+  render(eventsElement, noPointsComponent.element, RenderPosition.BEFOREEND);
+} else {
+  const tripInfoComponent = new TripInfoView(points);
+  render(tripMainElement, tripInfoComponent.element, RenderPosition.AFTERBEGIN);
 
-for (let i = 1; i < POINTS_COUNT; i++) {
-  renderPoint(tripListComponent.element, points[i]);
+  render(tripInfoComponent.element, new TripCostView(points).element, RenderPosition.BEFOREEND);
+
+  render(eventsElement, new TripSortView().element, RenderPosition.BEFOREEND);
+
+  const tripListComponent = new TripListView();
+  render(eventsElement, tripListComponent.element, RenderPosition.BEFOREEND);
+
+  for (let i = 0; i < POINTS_COUNT; i++) {
+    renderPoint(tripListComponent.element, points[i]);
+  }
 }

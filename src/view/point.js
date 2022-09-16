@@ -6,10 +6,10 @@ const calculateDuration = (startTime, endTime) => {
     return `${ (endTime - startTime) / 60000 }M`;
   }
   if ((endTime - startTime) >= 3600000 & (endTime - startTime) < 86400000) {
-    return `${Math.floor( (endTime - startTime) / 3600000 )}H ${Math.ceil((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
+    return `${Math.floor( (endTime - startTime) / 3600000 )}H ${Math.floor((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
   }
   if ((endTime - startTime) >= 86400000) {
-    return `${Math.floor( (endTime - startTime) / 86400000 )}D ${ Math.ceil((((endTime - startTime) / 86400000) - Math.floor((endTime - startTime) / 86400000)) * 24)}H ${Math.ceil((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
+    return `${Math.floor( (endTime - startTime) / 86400000 )}D ${ Math.floor((((endTime - startTime) / 86400000) - Math.floor((endTime - startTime) / 86400000)) * 24)}H ${Math.floor((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
   }
 };
 
