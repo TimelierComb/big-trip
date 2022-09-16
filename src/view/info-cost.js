@@ -1,10 +1,8 @@
 import {createElement} from '../render.js';
 
-const createTripCostTemplate = (points) => {
-
-  const calculateTotalPrice = () => {
-    let totalPrice = 0;
-
+const createInfoCostTemplate = (points) => {
+  let totalPrice = 0;
+  if (points.length !== 0) {
     const summarizePrice = (offer) => {
       totalPrice += offer.price;
     };
@@ -14,18 +12,16 @@ const createTripCostTemplate = (points) => {
 
       point.offers.offers.map(summarizePrice);
     });
-
-    return totalPrice;
-  };
+  }
 
   return (
     `<p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">${calculateTotalPrice()}</span>
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
     </p>`
   );
 };
 
-export default class TripCostView {
+export default class InfoCostView {
   #element = null;
   #datas = null;
 
@@ -34,7 +30,7 @@ export default class TripCostView {
   }
 
   get template() {
-    return createTripCostTemplate(this.#datas);
+    return createInfoCostTemplate(this.#datas);
   }
 
   get element() {

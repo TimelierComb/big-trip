@@ -3,7 +3,7 @@ import {createElement} from '../render.js';
 
 const calculateDuration = (startTime, endTime) => {
   if ((endTime - startTime) < 3600000) {
-    return `${ (endTime - startTime) / 60000 }M`;
+    return `${Math.floor((endTime - startTime) / 60000)}M`;
   }
   if ((endTime - startTime) >= 3600000 & (endTime - startTime) < 86400000) {
     return `${Math.floor( (endTime - startTime) / 3600000 )}H ${Math.floor((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
