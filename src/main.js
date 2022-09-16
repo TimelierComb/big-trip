@@ -1,18 +1,22 @@
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition} from './render.js';
 import EditPointView from './view/edit-point.js';
 import FiltersView from './view/filters.js';
-import NavigationView from './view/menu-navigation.js';
+import NavigationView from './view/navigation.js';
 import PointView from './view/point.js';
-import TripCostView from './view/trip-cost.js';
 import TripInfoView from './view/trip-info.js';
+import InfoCostView from './view/info-cost.js';
+import InfoMainView from './view/info-main.js';
 import TripSortView from './view/trip-sort.js';
 import TripListView from './view/trip-list.js';
+import NoPointsView from './view/no-points.js';
 
 import {generatePoint} from './mock/mock-point.js';
+import {generateFilters} from './mock/mock-filters.js';
 
 
-const POINTS_COUNT = 20;
+const POINTS_COUNT = 22;
 const points = Array.from({length: POINTS_COUNT}, generatePoint);
+const filters = generateFilters(points);
 
 const renderPoint = (pointListElement, point) => {
   const pointComponent = new PointView(point);
@@ -26,12 +30,27 @@ const renderPoint = (pointListElement, point) => {
     pointListElement.replaceChild(pointComponent.element, editPointComponent.element);
   };
 
+  const onEscKeydown = (evt) => {
+    if(evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeydown);
+    }
+  };
+
   pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
+
+    document.addEventListener('keydown', onEscKeydown);
   });
 
   editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
+    replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeydown);
+  });
+
+  editPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceFormToCard();
   });
 
@@ -40,26 +59,35 @@ const renderPoint = (pointListElement, point) => {
 
 const siteBodyElement = document.querySelector('.page-body');
 const tripMainElement = siteBodyElement.querySelector('.trip-main');
-
-const tripInfoComponent = new TripInfoView(points);
-render(tripMainElement, tripInfoComponent.element, RenderPosition.AFTERBEGIN);
-
-render(tripInfoComponent.element, new TripCostView(points).element, RenderPosition.BEFOREEND);
-
+const eventsElement = siteBodyElement.querySelector('.trip-events');
 const navigationElement = tripMainElement.querySelector('.trip-controls__navigation');
-const NavigationComponenet = new NavigationView();
-render(navigationElement, NavigationComponenet.element, RenderPosition.BEFOREEND);
-
 const filtersElement = tripMainElement.querySelector('.trip-controls__filters');
 
-render(filtersElement, new FiltersView().element, RenderPosition.BEFOREEND);
+const boardRender = (infoContainer, eventsContainer, boardPoints) => {
+  if (boardPoints.length === 0) {
+    const noPointsComponent = new NoPointsView();
+    render(eventsContainer, noPointsComponent.element, RenderPosition.BEFOREEND);
 
-const eventsElement = siteBodyElement.querySelector('.trip-events');
-render(eventsElement, new TripSortView().element, RenderPosition.BEFOREEND);
+    return;
+  }
 
-const tripListComponent = new TripListView();
-render(eventsElement, tripListComponent.element, RenderPosition.BEFOREEND);
+  const tripInfoComponent = new TripInfoView();
+  render(infoContainer, tripInfoComponent.element, RenderPosition.AFTERBEGIN);
 
-for (let i = 1; i < POINTS_COUNT; i++) {
-  renderPoint(tripListComponent.element, points[i]);
-}
+  render(tripInfoComponent.element, new InfoMainView(points).element, RenderPosition.AFTERBEGIN);
+  render(tripInfoComponent.element, new InfoCostView(points).element, RenderPosition.BEFOREEND);
+
+  render(eventsContainer, new TripSortView().element, RenderPosition.BEFOREEND);
+
+  const tripListComponent = new TripListView();
+  render(eventsContainer, tripListComponent.element, RenderPosition.BEFOREEND);
+
+  for (let i = 0; i < boardPoints.length; i++) {
+    renderPoint(tripListComponent.element, boardPoints[i]);
+  }
+};
+
+render(navigationElement, new NavigationView().element, RenderPosition.BEFOREEND);
+render(filtersElement, new FiltersView(filters).element, RenderPosition.BEFOREEND);
+
+boardRender(tripMainElement, eventsElement, points);

@@ -1,36 +1,5 @@
 import dayjs from 'dayjs';
 
-export const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.BEFOREBEGIN:
-      container.before(element);
-      break;
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-    case RenderPosition.AFTEREND:
-      container.after(element);
-      break;
-  }
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -46,6 +15,11 @@ export const generateDate = () => {
 
   return dayjs().add(daysGap, 'day').add(minutesGap, 'minute').toDate();
 };
+
+export const isPointInFuture = (startTime, endTime) => dayjs(startTime).isSame(dayjs(), 'D') || dayjs(startTime).isAfter(dayjs(), 'D') || (dayjs(startTime).isBefore(dayjs(), 'D') && dayjs(endTime).isAfter(dayjs(), 'D'));
+
+export const isPointInPast = (startTime, endTime) => dayjs(endTime).isBefore(dayjs(), 'D') || (dayjs(startTime).isBefore(dayjs(), 'D') && dayjs(endTime).isAfter(dayjs(), 'D'));
+
 
 export const generateParameter = (array) => array[getRandomInteger(0, array.length - 1)];
 

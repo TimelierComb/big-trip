@@ -1,14 +1,14 @@
 import {createElement} from '../render.js';
 
-const tripInfoTemplate = () => (
-  '<section class="trip-main__trip-info  trip-info"></section>'
+const noPointsTemplate = () => (
+  '<p class="trip-events__msg">Click New Event to create your first point</p>'
 );
 
-export default class TripInfoView {
+export default class NoPointsView {
   #element = null;
 
   get template() {
-    return tripInfoTemplate();
+    return noPointsTemplate();
   }
 
   get element() {
