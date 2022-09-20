@@ -38,19 +38,19 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHangler(() => {
     replaceCardToForm();
 
     document.addEventListener('keydown', onEscKeydown);
   });
 
-  editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
+  editPointComponent.setSubmitHandler((evt) => {
     evt.preventDefault();
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeydown);
   });
 
-  editPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  editPointComponent.setCloseHandler(() => {
     replaceFormToCard();
   });
 
