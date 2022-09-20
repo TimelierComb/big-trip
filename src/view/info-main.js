@@ -1,5 +1,5 @@
 import {convertDate} from '../utils.js';
-import {createElement} from '../render.js';
+import AbstractView from '../view/abstract.js';
 
 const createInfoMainTemplate = (points) => {
   const createRoute = () => {
@@ -33,27 +33,16 @@ const createInfoMainTemplate = (points) => {
   );
 };
 
-export default class InfoMainView {
-  #element = null;
+export default class InfoMainView extends AbstractView {
   #datas = null;
 
   constructor(datas) {
+    super();
+
     this.#datas = datas;
   }
 
   get template() {
     return createInfoMainTemplate(this.#datas);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

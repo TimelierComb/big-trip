@@ -1,5 +1,5 @@
 import {convertDate} from '../utils.js';
-import {createElement} from '../render.js';
+import AbstractView from '../view/abstract.js';
 
 const calculateDuration = (startTime, endTime) => {
   if ((endTime - startTime) < 3600000) {
@@ -71,27 +71,16 @@ const createPointTeplate = (point) => {
   );
 };
 
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #datas = null;
 
   constructor(datas) {
+    super();
+
     this.#datas = datas;
   }
 
   get template() {
     return createPointTeplate(this.#datas);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
