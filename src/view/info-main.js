@@ -1,4 +1,4 @@
-import {convertDate} from '../utils.js';
+import {convertDate} from '../utils/point.js';
 import AbstractView from '../view/abstract.js';
 
 const createInfoMainTemplate = (points) => {

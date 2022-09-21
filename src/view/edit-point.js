@@ -1,5 +1,6 @@
 import {CITIES, POINT_TYPES, TITLES, MIN_PRICE, MAX_PRICE} from '../const.js';
-import {convertDate, getRandomInteger} from '../utils.js';
+import {convertDate} from '../utils/point.js';
+import {getRandomInteger} from '../utils/common.js';
 import AbstractView from '../view/abstract.js';
 
 const createTypesTemplate = (items, type) =>  (
