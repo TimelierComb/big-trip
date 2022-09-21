@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './render.js';
+import {render, replace, RenderPosition} from './utils/render.js';
 import EditPointView from './view/edit-point.js';
 import FiltersView from './view/filters.js';
 import NavigationView from './view/navigation.js';
@@ -23,11 +23,11 @@ const renderPoint = (pointListElement, point) => {
   const editPointComponent = new EditPointView(point);
 
   const replaceCardToForm = () => {
-    pointListElement.replaceChild(editPointComponent.element, pointComponent.element);
+    replace(editPointComponent, pointComponent);
   };
 
   const replaceFormToCard = () => {
-    pointListElement.replaceChild(pointComponent.element, editPointComponent.element);
+    replace(pointComponent, editPointComponent);
   };
 
   const onEscKeydown = (evt) => {
@@ -38,23 +38,22 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHangler(() => {
     replaceCardToForm();
 
     document.addEventListener('keydown', onEscKeydown);
   });
 
-  editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  editPointComponent.setSubmitHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeydown);
   });
 
-  editPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  editPointComponent.setCloseHandler(() => {
     replaceFormToCard();
   });
 
-  render(pointListElement, pointComponent.element, RenderPosition.BEFOREEND);
+  render(pointListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
 const siteBodyElement = document.querySelector('.page-body');
@@ -66,28 +65,28 @@ const filtersElement = tripMainElement.querySelector('.trip-controls__filters');
 const boardRender = (infoContainer, eventsContainer, boardPoints) => {
   if (boardPoints.length === 0) {
     const noPointsComponent = new NoPointsView();
-    render(eventsContainer, noPointsComponent.element, RenderPosition.BEFOREEND);
+    render(eventsContainer, noPointsComponent, RenderPosition.BEFOREEND);
 
     return;
   }
 
   const tripInfoComponent = new TripInfoView();
-  render(infoContainer, tripInfoComponent.element, RenderPosition.AFTERBEGIN);
+  render(infoContainer, tripInfoComponent, RenderPosition.AFTERBEGIN);
 
-  render(tripInfoComponent.element, new InfoMainView(points).element, RenderPosition.AFTERBEGIN);
-  render(tripInfoComponent.element, new InfoCostView(points).element, RenderPosition.BEFOREEND);
+  render(tripInfoComponent.element, new InfoMainView(points), RenderPosition.AFTERBEGIN);
+  render(tripInfoComponent.element, new InfoCostView(points), RenderPosition.BEFOREEND);
 
-  render(eventsContainer, new TripSortView().element, RenderPosition.BEFOREEND);
+  render(eventsContainer, new TripSortView(), RenderPosition.BEFOREEND);
 
   const tripListComponent = new TripListView();
-  render(eventsContainer, tripListComponent.element, RenderPosition.BEFOREEND);
+  render(eventsContainer, tripListComponent, RenderPosition.BEFOREEND);
 
   for (let i = 0; i < boardPoints.length; i++) {
     renderPoint(tripListComponent.element, boardPoints[i]);
   }
 };
 
-render(navigationElement, new NavigationView().element, RenderPosition.BEFOREEND);
-render(filtersElement, new FiltersView(filters).element, RenderPosition.BEFOREEND);
+render(navigationElement, new NavigationView(), RenderPosition.BEFOREEND);
+render(filtersElement, new FiltersView(filters), RenderPosition.BEFOREEND);
 
 boardRender(tripMainElement, eventsElement, points);

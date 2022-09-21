@@ -1,4 +1,4 @@
-import {isPointInFuture, isPointInPast} from '../utils.js';
+import {isPointInFuture, isPointInPast} from '../utils/point.js';
 
 const filterPoints =  {
   everything: (points) => points.length,

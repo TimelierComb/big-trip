@@ -1,5 +1,5 @@
-import {convertDate} from '../utils.js';
-import {createElement} from '../render.js';
+import {convertDate} from '../utils/point.js';
+import AbstractView from '../view/abstract.js';
 
 const calculateDuration = (startTime, endTime) => {
   if ((endTime - startTime) < 3600000) {
@@ -71,11 +71,12 @@ const createPointTeplate = (point) => {
   );
 };
 
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #datas = null;
 
   constructor(datas) {
+    super();
+
     this.#datas = datas;
   }
 
@@ -83,15 +84,13 @@ export default class PointView {
     return createPointTeplate(this.#datas);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  setEditClickHangler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
 }

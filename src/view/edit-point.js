@@ -1,6 +1,7 @@
 import {CITIES, POINT_TYPES, TITLES, MIN_PRICE, MAX_PRICE} from '../const.js';
-import {convertDate, getRandomInteger} from '../utils.js';
-import {createElement} from '../render.js';
+import {convertDate} from '../utils/point.js';
+import {getRandomInteger} from '../utils/common.js';
+import AbstractView from '../view/abstract.js';
 
 const createTypesTemplate = (items, type) =>  (
   `<fieldset class="event__type-group">
@@ -156,11 +157,12 @@ const createNewPointTemplate = (point) => {
   );
 };
 
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView {
   #datas = null;
 
   constructor(datas = POINT_BLANK) {
+    super();
+
     this.#datas = datas;
   }
 
@@ -168,15 +170,23 @@ export default class EditPointView {
     return createNewPointTemplate(this.#datas);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  #formSubmit = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 
-    return this.#element;
-  }
+  setSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmit);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  #formClose = (evt) => {
+    evt.preventDefault();
+    this._callback.formClose();
+  };
+
+  setCloseHandler = (callback) => {
+    this._callback.formClose = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClose);
+  };
 }

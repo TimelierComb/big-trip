@@ -1,5 +1,6 @@
 import {TITLES, INFOS, CITIES, POINT_TYPES, MAX_PRICE, MIN_PRICE} from '../const.js';
-import {getRandomInteger, generateDate, generateParameter} from '../utils.js';
+import {generateDate, generateParameter} from '../utils/point.js';
+import {getRandomInteger} from '../utils/common.js';
 
 const generateInfo = () => {
   const generateText = () => INFOS[getRandomInteger(0, INFOS.length - 1)];
