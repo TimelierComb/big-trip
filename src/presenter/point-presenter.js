@@ -2,17 +2,25 @@ import {render, replace, remove, RenderPosition} from '../utils/render.js';
 import PointView from '../view/point.js';
 import EditPointView from '../view/edit-point.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITED: 'EDITED',
+};
 export default class PointPresenter {
   #pointContainer = null;
   #changeData = null;
+  #changeMode = null;
+
   #point = {};
+  #mode = Mode.DEFAULT;
 
   #pointComponent = null;
   #editPointComponent = null;
 
-  constructor(pointsContainer, changeData) {
+  constructor(pointsContainer, changeData, changeMode) {
     this.#pointContainer = pointsContainer;
     this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init = (point) =>  {
@@ -34,11 +42,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointContainer.element.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#pointContainer.element.contains(prevEditPointComponent.element)) {
+    if (this.#mode === Mode.EDITED) {
       replace(this.#editPointComponent, prevEditPointComponent.element);
     }
 
@@ -54,11 +62,14 @@ export default class PointPresenter {
   #replaceCardToForm = () => {
     replace(this.#editPointComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeydownHandler);
+    this.#changeMode();
+    this.#mode = Mode.EDITED;
   };
 
   #replaceFormToCard = () => {
     replace(this.#pointComponent, this.#editPointComponent);
     document.removeEventListener('keydown', this.#escKeydownHandler);
+    this.#mode = Mode.DEFAULT;
   };
 
   #escKeydownHandler = (evt) =>  {
@@ -83,5 +94,11 @@ export default class PointPresenter {
 
   #handleFavoriteClick = () => {
     this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToCard();
+    }
   };
 }
