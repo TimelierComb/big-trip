@@ -158,35 +158,35 @@ const createNewPointTemplate = (point) => {
 };
 
 export default class EditPointView extends AbstractView {
-  #datas = null;
+  #point = null;
 
-  constructor(datas = POINT_BLANK) {
+  constructor(point = POINT_BLANK) {
     super();
 
-    this.#datas = datas;
+    this.#point = point;
   }
 
   get template() {
-    return createNewPointTemplate(this.#datas);
+    return createNewPointTemplate(this.#point);
   }
 
-  #formSubmit = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this.#point);
   };
 
   setSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmit);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   };
 
-  #formClose = (evt) => {
+  #formCloseHandler = (evt) => {
     evt.preventDefault();
     this._callback.formClose();
   };
 
   setCloseHandler = (callback) => {
     this._callback.formClose = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClose);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCloseHandler);
   };
 }

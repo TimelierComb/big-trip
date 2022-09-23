@@ -1,3 +1,4 @@
+import {nanoid} from 'nanoid';
 import {TITLES, INFOS, CITIES, POINT_TYPES, MAX_PRICE, MIN_PRICE} from '../const.js';
 import {generateDate, generateParameter} from '../utils/point.js';
 import {getRandomInteger} from '../utils/common.js';
@@ -38,6 +39,7 @@ const generatePoint = () => {
   const datas = Array.from({length: 2}, generateDate).sort((a, b) => a - b);
 
   return {
+    id: nanoid(),
     basePrice: getRandomInteger(MIN_PRICE, MAX_PRICE),
     type: generateParameter(POINT_TYPES),
     destination: generateParameter(CITIES),
