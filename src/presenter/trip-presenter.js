@@ -1,5 +1,6 @@
 import {render, RenderPosition} from '../utils/render.js';
 import {updateItem} from '../utils/common.js';
+import {SortTipes} from '../const.js';
 import TripSortView from '../view/trip-sort.js';
 import TripListView from '../view/trip-list.js';
 import NoPointsView from '../view/no-points.js';
@@ -14,6 +15,8 @@ export default class TripPresenter {
 
   #tripPoints = [];
   #pointPresenter = new Map();
+  #currentSortType = SortTipes.DAY;
+  #originPoints = [];
 
   constructor(tripContainer) {
     this.#tripContainer = tripContainer;
@@ -21,6 +24,7 @@ export default class TripPresenter {
 
   init = (tripPoints) => {
     this.#tripPoints = [...tripPoints];
+    this.#originPoints = [...tripPoints];
 
     this.#renderTrip();
   };
@@ -38,10 +42,6 @@ export default class TripPresenter {
     const pointPresenter = new PointPresenter(this.#tripListComponent, this.#handlePointChange, this.#handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
-  };
-
-  #renderSort = () => {
-    render(this.#tripContainer, this.#tripSortComponent, RenderPosition.BEFOREEND);
   };
 
   #renderTripList = () => {
@@ -71,5 +71,41 @@ export default class TripPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
+  #renderSort = () => {
+    render(this.#tripContainer, this.#tripSortComponent, RenderPosition.BEFOREEND);
+    this.#tripSortComponent.setChangeSortHandler(this.#handleSortType);
+  };
+
+  #handleSortType = (sortType) => {
+    if ((this.#currentSortType === sortType)
+      || (sortType === SortTipes.EVENT)
+      || (sortType === SortTipes.OFFERS)) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+
+    this.#clearPointList();
+    this.#renderPoints();
+  };
+
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortTipes.DAY:
+        this.#tripPoints = [...this.#originPoints];
+        break;
+      case SortTipes.PRICE:
+        this.#tripPoints.sort((a,b) => a.basePrice - b.basePrice);
+        break;
+      case SortTipes.TIME:
+        this.#tripPoints.sort((a,b) => a.startTime - b.startTime);
+        break;
+      default:
+        this.#tripPoints = [...this.#originPoints];
+    }
+
+    this.#currentSortType = sortType;
   };
 }
