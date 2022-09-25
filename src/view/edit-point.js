@@ -3,13 +3,13 @@ import {convertDate} from '../utils/point.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
-const createTypesTemplate = (items, type) =>  (
+const createTypesTemplate = (types, currentType) =>  (
   `<fieldset class="event__type-group">
     <legend class="visually-hidden">Event type</legend>
-    ${items.map((item) => `
+    ${types.map((type) => `
       <div class="event__type-item">
-        <input id="event-type-${item}-2" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}" ${type === item ? 'checked' : ''}>
-        <label class="event__type-label  event__type-label--${item}" for="event-type-${item}-2">${item}</label>
+        <input id="event-type-${type}-2" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? 'checked' : ''}>
+        <label class="event__type-label  event__type-label--${type}" data-type="${type}" for="event-type-${type}-2">${type}</label>
       </div>
     `).join('')}
   </fieldset>`
@@ -164,14 +164,17 @@ export default class EditPointView extends SmartView {
     super();
 
     this.#point = point;
+    this.#parseDataToState();
+    this.element.addEventListener('click', this.#changeTypeHandler);
   }
 
   get template() {
-    return createNewPointTemplate(this.#point);
+    return createNewPointTemplate(this._state);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    this.#parseStateToData();
     this._callback.formSubmit(this.#point);
   };
 
@@ -188,5 +191,25 @@ export default class EditPointView extends SmartView {
   setCloseHandler = (callback) => {
     this._callback.formClose = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCloseHandler);
+  };
+
+  restoreHandlers = () => {
+    this.setCloseHandler(this._callback.formClose);
+    this.setSubmitHandler(this._callback.formSubmit);
+    this.element.addEventListener('click', this.#changeTypeHandler);
+  };
+
+  #changeTypeHandler = (evt) => {
+    if (evt.target.matches('.event__type-label')) {
+      this.updateData({type: evt.target.dataset.type}, false);
+    }
+  };
+
+  #parseDataToState = () => {
+    this._state = this.#point;
+  };
+
+  #parseStateToData = () => {
+    this.#point = this._state;
   };
 }
