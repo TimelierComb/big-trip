@@ -1,7 +1,7 @@
 import {CITIES, POINT_TYPES, TITLES, MIN_PRICE, MAX_PRICE} from '../const.js';
 import {convertDate} from '../utils/point.js';
 import {getRandomInteger} from '../utils/common.js';
-import AbstractView from '../view/abstract.js';
+import SmartView from './smart.js';
 
 const createTypesTemplate = (items, type) =>  (
   `<fieldset class="event__type-group">
@@ -157,7 +157,7 @@ const createNewPointTemplate = (point) => {
   );
 };
 
-export default class EditPointView extends AbstractView {
+export default class EditPointView extends SmartView {
   #point = null;
 
   constructor(point = POINT_BLANK) {
