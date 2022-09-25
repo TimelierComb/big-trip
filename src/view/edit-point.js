@@ -166,6 +166,8 @@ export default class EditPointView extends SmartView {
     this.#point = point;
     this.#parseDataToState();
     this.element.addEventListener('click', this.#changeTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#changeBasePriceHandler);
   }
 
   get template() {
@@ -197,11 +199,23 @@ export default class EditPointView extends SmartView {
     this.setCloseHandler(this._callback.formClose);
     this.setSubmitHandler(this._callback.formSubmit);
     this.element.addEventListener('click', this.#changeTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#changeBasePriceHandler);
   };
 
   #changeTypeHandler = (evt) => {
     if (evt.target.matches('.event__type-label')) {
       this.updateData({type: evt.target.dataset.type}, false);
+    }
+  };
+
+  #changeDestinationHandler = (evt) => {
+    this.updateData({destination: evt.target.value}, true);
+  };
+
+  #changeBasePriceHandler = (evt) => {
+    if (!isNaN(evt.target.value)) {
+      this.updateData({basePrice: evt.target.value}, true);
     }
   };
 
