@@ -44,3 +44,12 @@ export const TITLES = [
   'Choose seats',
   'Travel by train',
 ];
+
+
+export const SortTipes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};

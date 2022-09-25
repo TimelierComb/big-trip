@@ -1,5 +1,6 @@
 import {convertDate} from '../utils/point.js';
 import AbstractView from '../view/abstract.js';
+import {calculatePrice} from '../utils/common.js';
 
 const calculateDuration = (startTime, endTime) => {
   if ((endTime - startTime) < 3600000) {
@@ -11,15 +12,6 @@ const calculateDuration = (startTime, endTime) => {
   if ((endTime - startTime) >= 86400000) {
     return `${Math.floor( (endTime - startTime) / 86400000 )}D ${ Math.floor((((endTime - startTime) / 86400000) - Math.floor((endTime - startTime) / 86400000)) * 24)}H ${Math.floor((((endTime - startTime) / 3600000) - Math.floor( (endTime - startTime) / 3600000 )) * 60)}M`;
   }
-};
-
-const calculatePrice = (prices, basePrice) => {
-  let result = basePrice;
-  prices.offers.forEach((price) => {
-    result +=  price.price;
-  });
-
-  return result;
 };
 
 const createOffersTemplate = (specials) =>  `
