@@ -1,5 +1,5 @@
 import {render, RenderPosition} from '../utils/render.js';
-import {updateItem} from '../utils/common.js';
+import {updateItem, sortByDay, sortByDuration, sortByPrice} from '../utils/common.js';
 import {SortTipes} from '../const.js';
 import TripSortView from '../view/trip-sort.js';
 import TripListView from '../view/trip-list.js';
@@ -23,7 +23,7 @@ export default class TripPresenter {
   }
 
   init = (tripPoints) => {
-    this.#tripPoints = [...tripPoints];
+    this.#tripPoints = [...tripPoints].sort(sortByDay);
     this.#originPoints = [...tripPoints];
 
     this.#renderTrip();
@@ -94,13 +94,13 @@ export default class TripPresenter {
   #sortPoints = (sortType) => {
     switch (sortType) {
       case SortTipes.DAY:
-        this.#tripPoints = [...this.#originPoints];
+        this.#tripPoints.sort(sortByDay);
         break;
       case SortTipes.PRICE:
-        this.#tripPoints.sort((a,b) => a.basePrice - b.basePrice);
+        this.#tripPoints.sort(sortByPrice);
         break;
       case SortTipes.TIME:
-        this.#tripPoints.sort((a,b) => a.startTime - b.startTime);
+        this.#tripPoints.sort(sortByDuration);
         break;
       default:
         this.#tripPoints = [...this.#originPoints];

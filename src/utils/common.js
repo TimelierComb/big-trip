@@ -18,3 +18,23 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+
+export const calculatePrice = (prices, basePrice) => {
+  let result = basePrice;
+  prices.offers.forEach((price) => {
+    result +=  price.price;
+  });
+
+  return result;
+};
+
+export const sortByDay = (pointA, pointB) => pointA.startTime - pointB.startTime;
+
+export const sortByDuration = (pointA, pointB) => (pointA.endTime - pointA.startTime) - (pointB.endTime - pointB.startTime);
+
+export const sortByPrice = (pointA, pointB) => {
+  const pointAPrice = calculatePrice(pointA.offers, pointA.basePrice);
+  const pointBPrice = calculatePrice(pointB.offers, pointB.basePrice);
+
+  return pointAPrice - pointBPrice;
+};
