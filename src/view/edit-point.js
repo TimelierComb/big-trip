@@ -47,7 +47,7 @@ const createOffersTemplate = (specials, offers) =>  (
     <div class="event__available-offers">
       ${specials.map((special) => `
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(special)}-2" type="checkbox" name="event-offer-${createOfferName(special)}" ${offers.offers.some((offer) => offer.title === special)  ? 'checked' : ''}>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(special)}-2" type="checkbox" name="event-offer-${createOfferName(special)}" ${offers.some((offer) => offer.title === special)  ? 'checked' : ''}>
           <label class="event__offer-label" for="event-offer-${createOfferName(special)}-2">
             <span class="event__offer-title">${special}</span>
             &plus;&euro;&nbsp;
@@ -165,9 +165,8 @@ export default class EditPointView extends SmartView {
 
     this.#point = point;
     this.#parseDataToState();
-    this.element.addEventListener('click', this.#changeTypeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#changeBasePriceHandler);
+    this.#innerHandlers();
+
   }
 
   get template() {
@@ -198,9 +197,7 @@ export default class EditPointView extends SmartView {
   restoreHandlers = () => {
     this.setCloseHandler(this._callback.formClose);
     this.setSubmitHandler(this._callback.formSubmit);
-    this.element.addEventListener('click', this.#changeTypeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#changeBasePriceHandler);
+    this.#innerHandlers();
   };
 
   #changeTypeHandler = (evt) => {
@@ -225,5 +222,11 @@ export default class EditPointView extends SmartView {
 
   #parseStateToData = () => {
     this.#point = this._state;
+  };
+
+  #innerHandlers = () => {
+    this.element.addEventListener('click', this.#changeTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#changeBasePriceHandler);
   };
 }

@@ -16,7 +16,7 @@ const generateInfo = () => {
   };
 };
 
-const generateOffer = () => {
+const generateSpecials = () => {
   const title = generateParameter(TITLES);
   const price = getRandomInteger(MIN_PRICE, MAX_PRICE);
 
@@ -26,24 +26,32 @@ const generateOffer = () => {
   };
 };
 
-const generateOffers = () => {
-  const offers = Array.from({length: getRandomInteger(0, 5)}, generateOffer);
+const generateOffer = (pointType) => {
+  const offers = Array.from({length: getRandomInteger(0, 5)}, generateSpecials);
 
   return {
-    type: generateParameter(POINT_TYPES),
+    type: pointType,
     offers,
   };
 };
 
+const generateOffers = (pointTypes) => pointTypes.map((pointType) => generateOffer(pointType));
+const offersList = generateOffers(POINT_TYPES);
+
 const generatePoint = () => {
   const datas = Array.from({length: 2}, generateDate).sort((a, b) => a - b);
+  const type = generateParameter(POINT_TYPES);
+
+  const filteredOffers = offersList.slice().filter((offer) => offer.type === type).map((offer) => offer.offers);
+
+  const decomposeOffers = (offers) => offers;
 
   return {
     id: nanoid(),
     basePrice: getRandomInteger(MIN_PRICE, MAX_PRICE),
-    type: generateParameter(POINT_TYPES),
+    type,
     destination: generateParameter(CITIES),
-    offers: generateOffers(),
+    offers: decomposeOffers(...filteredOffers),
     info: generateInfo(),
     startTime: datas[0],
     endTime: datas[1],

@@ -19,7 +19,7 @@ export const updateItem = (items, update) => {
   ];
 };
 
-export const calculatePrice = (prices, basePrice) => {
+export const calculatePrice = (offers, basePrice) => {
   if (isNaN(basePrice)) {
     basePrice = 0;
   }
@@ -27,8 +27,8 @@ export const calculatePrice = (prices, basePrice) => {
   ++basePrice;
 
   let result = basePrice;
-  prices.offers.forEach((price) => {
-    result +=  price.price;
+  offers.forEach((offer) => {
+    result +=  ++offer.price;
   });
 
   return result;
