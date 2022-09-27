@@ -1,7 +1,8 @@
 import {CITIES, POINT_TYPES} from '../const.js';
 import {convertDate} from '../utils/point.js';
 import SmartView from './smart.js';
-import {offersList} from '../mock/mock-point.js';
+import {offersList, descriptionList} from '../mock/mock-point.js';
+import {restItem} from '../utils/common.js';
 
 const createTypesTemplate = (types, currentType) =>  (
   `<fieldset class="event__type-group">
@@ -65,10 +66,10 @@ const createOffersTemplate = (offers, type) => (
   </section>`
 );
 
-const createPhotosTemplate = (images) => `
+const createPhotosTemplate = (pictures) => `
   <div class="event__photos-tape">
-    ${images.map((image)=> `
-      <img class="event__photo" src="${image}" alt="Event photo">
+    ${pictures.map((picture)=> `
+      <img class="event__photo" src="${picture.src}" alt="${picture.description}">
     `).join('')}
   </div>
 `;
@@ -96,7 +97,7 @@ const POINT_BLANK = {
 };
 
 const createNewPointTemplate = (point) => {
-  const {destination, type, startTime, info, endTime, offers, basePrice} = point;
+  const {description, type, startTime, endTime, offers, basePrice} = point;
 
   return (
     `<li class="trip-events__item">
@@ -120,7 +121,7 @@ const createNewPointTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination-2">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-2" type="text" name="event-destination" value="${destination}" list="destination-list-2">
+            <input class="event__input  event__input--destination" id="event-destination-2" type="text" name="event-destination" value="${description.name}" list="destination-list-2">
 
             ${createDestinationOptionTemplate(CITIES)}
 
@@ -143,18 +144,18 @@ const createNewPointTemplate = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${destination === ''? 'Cancel' : 'Delete'}</button>
-          ${destination === ''? '' : createOpenFormButtonTemplate()}
+          <button class="event__reset-btn" type="reset">${description === ''? 'Cancel' : 'Delete'}</button>
+          ${description === ''? '' : createOpenFormButtonTemplate()}
         </header>
         <section class="event__details">
           ${createOffersTemplate(offersList, type)}
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${info.text}</p>
+            <p class="event__destination-description">${description.description}</p>
 
             <div class="event__photos-container">
-              ${createPhotosTemplate(info.photos)}
+              ${createPhotosTemplate(description.pictures)}
             </div>
           </section>
         </section>
@@ -212,8 +213,24 @@ export default class EditPointView extends SmartView {
     }
   };
 
-  #changeDestinationHandler = (evt) => {
-    this.updateData({destination: evt.target.value}, true);
+  #changeDescriptionHandler = (evt) => {
+    this.updateData(this.#changeDescription(evt), true);
+  };
+
+  #changeDescription = (evt) => {
+    const filteredDescriptions = descriptionList.slice().filter((descriptionItem) => descriptionItem.name === evt.target.value);
+
+    return descriptionList.some((descriptionItem) => descriptionItem.name === evt.target.value)
+      ? {
+        description: restItem(...filteredDescriptions),
+      }
+      : {
+        description: {
+          name: evt.target.value,
+          description: '',
+          pictures: [],
+        }
+      };
   };
 
   #changeBasePriceHandler = (evt) => {
@@ -232,7 +249,7 @@ export default class EditPointView extends SmartView {
 
   #innerHandlers = () => {
     this.element.addEventListener('click', this.#changeTypeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDescriptionHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#changeBasePriceHandler);
   };
 }

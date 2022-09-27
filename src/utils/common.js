@@ -44,3 +44,5 @@ export const sortByPrice = (pointA, pointB) => {
 
   return pointAPrice - pointBPrice;
 };
+
+export const restItem = (item) => item;

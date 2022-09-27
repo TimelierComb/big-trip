@@ -26,7 +26,7 @@ const createOffersTemplate = (offers) =>  `
 `;
 
 const createPointTeplate = (point) => {
-  const {destination, type, startTime, endTime, isFavorite, offers, basePrice} = point;
+  const {description, type, startTime, endTime, isFavorite, offers, basePrice} = point;
 
   return (
     `<li class="trip-events__item">
@@ -35,7 +35,7 @@ const createPointTeplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${destination}</h3>
+        <h3 class="event__title">${type} ${description.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${convertDate(startTime, 'YYYY-MM-DDTHH:mm')}">${convertDate(startTime, 'HH:mm')}</time>
