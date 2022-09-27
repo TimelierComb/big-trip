@@ -1,7 +1,7 @@
-import {CITIES, POINT_TYPES, TITLES, MIN_PRICE, MAX_PRICE} from '../const.js';
+import {CITIES, POINT_TYPES} from '../const.js';
 import {convertDate} from '../utils/point.js';
-import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
+import {offersList} from '../mock/mock-point.js';
 
 const createTypesTemplate = (types, currentType) =>  (
   `<fieldset class="event__type-group">
@@ -41,21 +41,27 @@ const createOfferName = (name) => {
   }
 };
 
-const createOffersTemplate = (specials, offers) =>  (
+const createOffersTemplate = (offers, type) => (
   `<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-    <div class="event__available-offers">
-      ${specials.map((special) => `
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(special)}-2" type="checkbox" name="event-offer-${createOfferName(special)}" ${offers.some((offer) => offer.title === special)  ? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-${createOfferName(special)}-2">
-            <span class="event__offer-title">${special}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${getRandomInteger(MIN_PRICE, MAX_PRICE)}</span>
-          </label>
-        </div>
-      `).join('')}
-    </div>
+  ${offers.map((offer) => {
+    if (offer.type === type) {
+      return (
+        `<h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${offer.offers.map((element) => (
+          `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(element.title)}-2" type="checkbox" name="event-offer-${createOfferName(element.title)}" ${Math.round(Math.random())  ? 'checked' : ''}>
+            <label class="event__offer-label" for="event-offer-${createOfferName(element.title)}-2">
+              <span class="event__offer-title">${element.title}</span>
+              &plus;&euro;&nbsp;
+              <span class="event__offer-price">${element.price}</span>
+            </label>
+          </div>`
+        )).join('')}
+        </div>`
+      );
+    }
+  }).join('')}
   </section>`
 );
 
@@ -141,7 +147,7 @@ const createNewPointTemplate = (point) => {
           ${destination === ''? '' : createOpenFormButtonTemplate()}
         </header>
         <section class="event__details">
-          ${createOffersTemplate(TITLES, offers)}
+          ${createOffersTemplate(offersList, type)}
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>

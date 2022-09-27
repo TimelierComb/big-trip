@@ -59,4 +59,4 @@ const generatePoint = () => {
   };
 };
 
-export {generatePoint};
+export {generatePoint, offersList};
