@@ -4,26 +4,29 @@ import AbstractView from '../view/abstract.js';
 const createInfoMainTemplate = (points) => {
   const createRoute = () => {
     if (points.length > 3) {
-      return `${points[points.length - 1].destination}&nbsp;&mdash;&nbsp;&#x2026;&nbsp;&mdash;&nbsp;${points[0].destination}`;
+      return `${points[0].description.name}&nbsp;&mdash;&nbsp;&#x2026;&nbsp;&mdash;&nbsp;${points[points.length - 1].description.name}`;
     } else {
       const citiesList = [];
 
       return points.map((point) => {
-        const result = citiesList[citiesList.length - 1] === point.destination
+        const result = citiesList[citiesList.length - 1] === point.description.name
           ? ''
-          : point.destination;
+          : point.description.name;
 
-        citiesList.push(point.destination);
+        citiesList.push(point.description.name);
 
 
         return result;
-      }).filter((point) => point !== '').reverse().join(' &mdash;&nbsp;');
+      }).filter((point) => point !== '').join(' &mdash;&nbsp;');
     }
   };
 
   const firsDate = convertDate(points[0].startTime, 'MMM DD');
-  const secondDate = convertDate(points[points.length - 1].endTime, 'DD');
+  let secondDate = convertDate(points[points.length - 1].endTime, 'MMM DD');
 
+  if (firsDate.slice(0, 3) === secondDate.slice(0, 3)) {
+    secondDate = convertDate(points[points.length - 1].endTime, 'DD');
+  }
 
   return (
     `<div class="trip-info__main">

@@ -3,10 +3,11 @@ import TripPresenter from './presenter/trip-presenter.js';
 
 import {generatePoint} from './mock/mock-point.js';
 import {generateFilters} from './mock/mock-filters.js';
+import {sortByDay} from './utils/common.js';
 
 
 const POINTS_COUNT = 22;
-const points = Array.from({length: POINTS_COUNT}, generatePoint);
+const points = Array.from({length: POINTS_COUNT}, generatePoint).sort(sortByDay);
 const filters = generateFilters(points);
 
 const siteBodyElement = document.querySelector('.page-body');
