@@ -14,9 +14,9 @@ const calculateDuration = (startTime, endTime) => {
   }
 };
 
-const createOffersTemplate = (specials) =>  `
+const createOffersTemplate = (offers) =>  `
 <ul class="event__selected-offers">
-  ${specials.map((offer) => `
+  ${offers.map((offer) => `
   <li class="event__offer">
     <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
@@ -26,7 +26,7 @@ const createOffersTemplate = (specials) =>  `
 `;
 
 const createPointTeplate = (point) => {
-  const {destination, type, startTime, endTime, isFavorite, offers, basePrice} = point;
+  const {description, type, startTime, endTime, isFavorite, offers, basePrice} = point;
 
   return (
     `<li class="trip-events__item">
@@ -35,7 +35,7 @@ const createPointTeplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${destination}</h3>
+        <h3 class="event__title">${type} ${description.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${convertDate(startTime, 'YYYY-MM-DDTHH:mm')}">${convertDate(startTime, 'HH:mm')}</time>
@@ -48,7 +48,7 @@ const createPointTeplate = (point) => {
           &euro;&nbsp;<span class="event__price-value">${calculatePrice(offers, basePrice)}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        ${createOffersTemplate(offers.offers)}
+        ${createOffersTemplate(offers)}
         <button class="event__favorite-btn${isFavorite ? ' event__favorite-btn--active' : ''}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

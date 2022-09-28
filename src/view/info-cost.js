@@ -8,9 +8,11 @@ const createInfoCostTemplate = (points) => {
     };
 
     points.map((point) => {
-      totalPrice += point.basePrice;
+      const {offers, basePrice} = point;
 
-      point.offers.offers.map(summarizePrice);
+      totalPrice += basePrice;
+
+      offers.map(summarizePrice);
     });
   }
 

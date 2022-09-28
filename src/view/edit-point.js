@@ -1,15 +1,16 @@
-import {CITIES, POINT_TYPES, TITLES, MIN_PRICE, MAX_PRICE} from '../const.js';
+import {CITIES, POINT_TYPES} from '../const.js';
 import {convertDate} from '../utils/point.js';
-import {getRandomInteger} from '../utils/common.js';
-import AbstractView from '../view/abstract.js';
+import SmartView from './smart.js';
+import {offersList, descriptionList} from '../mock/mock-point.js';
+import {restItem} from '../utils/common.js';
 
-const createTypesTemplate = (items, type) =>  (
+const createTypesTemplate = (types, currentType) =>  (
   `<fieldset class="event__type-group">
     <legend class="visually-hidden">Event type</legend>
-    ${items.map((item) => `
+    ${types.map((type) => `
       <div class="event__type-item">
-        <input id="event-type-${item}-2" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}" ${type === item ? 'checked' : ''}>
-        <label class="event__type-label  event__type-label--${item}" for="event-type-${item}-2">${item}</label>
+        <input id="event-type-${type}-2" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? 'checked' : ''}>
+        <label class="event__type-label  event__type-label--${type}" data-type="${type}" for="event-type-${type}-2">${type}</label>
       </div>
     `).join('')}
   </fieldset>`
@@ -41,28 +42,34 @@ const createOfferName = (name) => {
   }
 };
 
-const createOffersTemplate = (specials, offers) =>  (
+const createOffersTemplate = (offers, type) => (
   `<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-    <div class="event__available-offers">
-      ${specials.map((special) => `
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(special)}-2" type="checkbox" name="event-offer-${createOfferName(special)}" ${offers.offers.some((offer) => offer.title === special)  ? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-${createOfferName(special)}-2">
-            <span class="event__offer-title">${special}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${getRandomInteger(MIN_PRICE, MAX_PRICE)}</span>
-          </label>
-        </div>
-      `).join('')}
-    </div>
+  ${offers.map((offer) => {
+    if (offer.type === type) {
+      return (
+        `<h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${offer.offers.map((element) => (
+          `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(element.title)}-2" type="checkbox" name="event-offer-${createOfferName(element.title)}" ${Math.round(Math.random())  ? 'checked' : ''}>
+            <label class="event__offer-label" for="event-offer-${createOfferName(element.title)}-2">
+              <span class="event__offer-title">${element.title}</span>
+              &plus;&euro;&nbsp;
+              <span class="event__offer-price">${element.price}</span>
+            </label>
+          </div>`
+        )).join('')}
+        </div>`
+      );
+    }
+  }).join('')}
   </section>`
 );
 
-const createPhotosTemplate = (images) => `
+const createPhotosTemplate = (pictures) => `
   <div class="event__photos-tape">
-    ${images.map((image)=> `
-      <img class="event__photo" src="${image}" alt="Event photo">
+    ${pictures.map((picture)=> `
+      <img class="event__photo" src="${picture.src}" alt="${picture.description}">
     `).join('')}
   </div>
 `;
@@ -90,7 +97,7 @@ const POINT_BLANK = {
 };
 
 const createNewPointTemplate = (point) => {
-  const {destination, type, startTime, info, endTime, offers, basePrice} = point;
+  const {description, type, startTime, endTime, offers, basePrice} = point;
 
   return (
     `<li class="trip-events__item">
@@ -114,7 +121,7 @@ const createNewPointTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination-2">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-2" type="text" name="event-destination" value="${destination}" list="destination-list-2">
+            <input class="event__input  event__input--destination" id="event-destination-2" type="text" name="event-destination" value="${description.name}" list="destination-list-2">
 
             ${createDestinationOptionTemplate(CITIES)}
 
@@ -137,18 +144,18 @@ const createNewPointTemplate = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${destination === ''? 'Cancel' : 'Delete'}</button>
-          ${destination === ''? '' : createOpenFormButtonTemplate()}
+          <button class="event__reset-btn" type="reset">${description === ''? 'Cancel' : 'Delete'}</button>
+          ${description === ''? '' : createOpenFormButtonTemplate()}
         </header>
         <section class="event__details">
-          ${createOffersTemplate(TITLES, offers)}
+          ${createOffersTemplate(offersList, type)}
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${info.text}</p>
+            <p class="event__destination-description">${description.description}</p>
 
             <div class="event__photos-container">
-              ${createPhotosTemplate(info.photos)}
+              ${createPhotosTemplate(description.pictures)}
             </div>
           </section>
         </section>
@@ -157,21 +164,25 @@ const createNewPointTemplate = (point) => {
   );
 };
 
-export default class EditPointView extends AbstractView {
+export default class EditPointView extends SmartView {
   #point = null;
 
   constructor(point = POINT_BLANK) {
     super();
 
     this.#point = point;
+    this.#parseDataToState();
+    this.#innerHandlers();
+
   }
 
   get template() {
-    return createNewPointTemplate(this.#point);
+    return createNewPointTemplate(this._state);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    this.#parseStateToData();
     this._callback.formSubmit(this.#point);
   };
 
@@ -188,5 +199,57 @@ export default class EditPointView extends AbstractView {
   setCloseHandler = (callback) => {
     this._callback.formClose = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCloseHandler);
+  };
+
+  restoreHandlers = () => {
+    this.setCloseHandler(this._callback.formClose);
+    this.setSubmitHandler(this._callback.formSubmit);
+    this.#innerHandlers();
+  };
+
+  #changeTypeHandler = (evt) => {
+    if (evt.target.matches('.event__type-label')) {
+      this.updateData({type: evt.target.dataset.type}, false);
+    }
+  };
+
+  #changeDescriptionHandler = (evt) => {
+    this.updateData(this.#changeDescription(evt), true);
+  };
+
+  #changeDescription = (evt) => {
+    const filteredDescriptions = descriptionList.slice().filter((descriptionItem) => descriptionItem.name === evt.target.value);
+
+    return descriptionList.some((descriptionItem) => descriptionItem.name === evt.target.value)
+      ? {
+        description: restItem(...filteredDescriptions),
+      }
+      : {
+        description: {
+          name: evt.target.value,
+          description: '',
+          pictures: [],
+        }
+      };
+  };
+
+  #changeBasePriceHandler = (evt) => {
+    if (!isNaN(evt.target.value)) {
+      this.updateData({basePrice: evt.target.value}, true);
+    }
+  };
+
+  #parseDataToState = () => {
+    this._state = this.#point;
+  };
+
+  #parseStateToData = () => {
+    this.#point = this._state;
+  };
+
+  #innerHandlers = () => {
+    this.element.addEventListener('click', this.#changeTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDescriptionHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#changeBasePriceHandler);
   };
 }
