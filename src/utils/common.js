@@ -24,11 +24,11 @@ export const calculatePrice = (offers, basePrice) => {
     basePrice = 0;
   }
 
-  ++basePrice;
+  basePrice = +basePrice;
 
   let result = basePrice;
   offers.forEach((offer) => {
-    result +=  ++offer.price;
+    result +=  +offer.price;
   });
 
   return result;
