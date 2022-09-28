@@ -3,6 +3,8 @@ import {convertDate} from '../utils/point.js';
 import SmartView from './smart.js';
 import {offersList, descriptionList} from '../mock/mock-point.js';
 import {restItem} from '../utils/common.js';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypesTemplate = (types, currentType) =>  (
   `<fieldset class="event__type-group">
@@ -166,12 +168,13 @@ const createNewPointTemplate = (point) => {
 
 export default class EditPointView extends SmartView {
   #point = null;
+  #datepicker = null;
 
   constructor(point = POINT_BLANK) {
     super();
 
     this.#point = point;
-    this.#parseDataToState();
+    EditPointView.parseDataToState();
     this.#innerHandlers();
 
   }
@@ -180,9 +183,35 @@ export default class EditPointView extends SmartView {
     return createNewPointTemplate(this._state);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  }
+
+  #setStartDatepicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('.event-start-time-2'),
+      {
+        dateFormat: 'j F',
+        defaultDate: this._state.startTime,
+        onChange: this.#startDateChangeHandler,
+      }
+    )
+  }
+
+  #startDateChangeHandler = ([userTime]) => {
+    this.updateData({
+      startTime: userTime,
+    });
+  };
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#parseStateToData();
+    EditPointView.parseStateToData();
     this._callback.formSubmit(this.#point);
   };
 
@@ -239,11 +268,11 @@ export default class EditPointView extends SmartView {
     }
   };
 
-  #parseDataToState = () => {
+  static parseDataToState = () => {
     this._state = this.#point;
   };
 
-  #parseStateToData = () => {
+  static parseStateToData = () => {
     this.#point = this._state;
   };
 
