@@ -3,6 +3,8 @@ import {convertDate} from '../utils/point.js';
 import SmartView from './smart.js';
 import {offersList, descriptionList} from '../mock/mock-point.js';
 import {restItem} from '../utils/common.js';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypesTemplate = (types, currentType) =>  (
   `<fieldset class="event__type-group">
@@ -165,25 +167,76 @@ const createNewPointTemplate = (point) => {
 };
 
 export default class EditPointView extends SmartView {
-  #point = null;
+  #startDatepicker = null;
+  #endDatepicker = null;
+
 
   constructor(point = POINT_BLANK) {
     super();
 
-    this.#point = point;
-    this.#parseDataToState();
+    this._state = EditPointView.parseDataToState(point);
     this.#innerHandlers();
-
+    this.#setStartDatepicker();
+    this.#setEndDatepicker();
   }
 
   get template() {
     return createNewPointTemplate(this._state);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (!this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+      this.#startDatepicker = null;
+    }
+
+    if (!this.#endDatepicker) {
+      this.#endDatepicker.destroy();
+      this.#endDatepicker = null;
+    }
+  }
+
+  #setStartDatepicker = () => {
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('#event-start-time-2'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.startTime,
+        onChange: this.#startDateChangeHandler,
+      },
+    );
+  };
+
+  #setEndDatepicker = () => {
+    this.#endDatepicker = flatpickr(
+      this.element.querySelector('#event-end-time-2'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.endTime,
+        onChange: this.#endDateChangeHandler,
+      },
+    );
+  };
+
+  #startDateChangeHandler = ([userTime]) => {
+    this.updateData({
+      startTime: userTime,
+    }, true);
+  };
+
+  #endDateChangeHandler = ([userTime]) => {
+    this.updateData({
+      endTime: userTime,
+    }, true);
+  };
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#parseStateToData();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(EditPointView.parseStateToData(this._state));
   };
 
   setSubmitHandler = (callback) => {
@@ -205,6 +258,8 @@ export default class EditPointView extends SmartView {
     this.setCloseHandler(this._callback.formClose);
     this.setSubmitHandler(this._callback.formSubmit);
     this.#innerHandlers();
+    this.#setStartDatepicker();
+    this.#setEndDatepicker();
   };
 
   #changeTypeHandler = (evt) => {
@@ -239,13 +294,12 @@ export default class EditPointView extends SmartView {
     }
   };
 
-  #parseDataToState = () => {
-    this._state = this.#point;
-  };
+  static parseDataToState = (data) => ({
+    ...data,
+  }
+  );
 
-  #parseStateToData = () => {
-    this.#point = this._state;
-  };
+  static parseStateToData = (state) => state;
 
   #innerHandlers = () => {
     this.element.addEventListener('click', this.#changeTypeHandler);

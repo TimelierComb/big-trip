@@ -23,8 +23,10 @@ export default class SmartView extends AbstractView {
 
     this._state = {...this._state, ...update};
 
-    if (!isText) {
-      this.updateElement();
+    if (isText) {
+      return;
     }
+
+    this.updateElement();
   };
 }
