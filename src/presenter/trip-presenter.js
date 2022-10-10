@@ -29,6 +29,9 @@ export default class TripPresenter {
   }
 
   init = () => {
+    this.#tripPoints = [...tripPoints].sort(sortByDay);
+    this.#originPoints = [...tripPoints];
+
     this.#renderTrip();
   };
 
