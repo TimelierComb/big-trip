@@ -8,6 +8,7 @@ import PointPresenter from './point-presenter.js';
 
 export default class TripPresenter {
   #tripContainer = null;
+  #pointsModel = null;
 
   #noPointsComponent = new NoPointsView();
   #tripListComponent = new TripListView();
@@ -18,14 +19,16 @@ export default class TripPresenter {
   #currentSortType = SortTipes.DAY;
   #originPoints = [];
 
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel) {
     this.#tripContainer = tripContainer;
+    this.#pointsModel = pointsModel;
   }
 
-  init = (tripPoints) => {
-    this.#tripPoints = [...tripPoints].sort(sortByDay);
-    this.#originPoints = [...tripPoints];
+  get points() {
+    return this.#pointsModel.points;
+  }
 
+  init = () => {
     this.#renderTrip();
   };
 
