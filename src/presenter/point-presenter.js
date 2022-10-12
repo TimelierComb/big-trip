@@ -1,6 +1,7 @@
 import {render, replace, remove, RenderPosition} from '../utils/render.js';
 import PointView from '../view/point.js';
 import EditPointView from '../view/edit-point.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -93,7 +94,11 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite},
+    );
   };
 
   resetView = () => {

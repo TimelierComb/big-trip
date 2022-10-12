@@ -22,4 +22,4 @@ const infoComponent = new InfoPresenter(tripMainElement);
 const tripComponent = new TripPresenter(eventsElement, pointsModel);
 
 infoComponent.init(points, filters);
-tripComponent.init(points);
+tripComponent.init();
