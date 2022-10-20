@@ -15,7 +15,7 @@ export default class TripPresenter {
   #tripSortComponent = new TripSortView();
 
   #pointPresenter = new Map();
-  #currentSortType = SortTipes.DAY;
+  static currentSortType = SortTipes.DAY;
 
   constructor(tripContainer, pointsModel) {
     this.#tripContainer = tripContainer;
@@ -25,7 +25,7 @@ export default class TripPresenter {
   }
 
   get points() {
-    switch (this.#currentSortType) {
+    switch (TripPresenter.currentSortType) {
       case SortTipes.DAY:
         return  [...this.#pointsModel.points].sort(sortByDay);
       case SortTipes.PRICE:
@@ -85,13 +85,13 @@ export default class TripPresenter {
   };
 
   #handleSortType = (sortType) => {
-    if ((this.#currentSortType === sortType)
+    if ((TripPresenter.currentSortType === sortType)
       || (sortType === SortTipes.EVENT)
       || (sortType === SortTipes.OFFERS)) {
       return;
     }
 
-    this.#currentSortType = sortType;
+    TripPresenter.currentSortType = sortType;
 
     this.#clearPointList();
     this.#renderBoard();
@@ -134,7 +134,7 @@ export default class TripPresenter {
     remove(this.#noPointsComponent);
 
     if (resetSortType) {
-      this.#currentSortType = SortTipes.DAY;
+      TripPresenter.currentSortType = SortTipes.DAY;
     }
   };
 }

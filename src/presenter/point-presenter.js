@@ -1,7 +1,9 @@
 import {render, replace, remove, RenderPosition} from '../utils/render.js';
 import PointView from '../view/point.js';
 import EditPointView from '../view/edit-point.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, SortTipes} from '../const.js';
+import TripPresenter from './trip-presenter.js';
+import {calculatePrice} from '../utils/common.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -37,6 +39,7 @@ export default class PointPresenter {
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#editPointComponent.setSubmitHandler(this.#handleFormSubmit);
     this.#editPointComponent.setCloseHandler(this.#handleFormClose);
+    this.#editPointComponent.setDeleteHandler(this.#handleDeleteClick);
 
     if (prevEditPointComponent === null || prevPointComponent === null) {
       render(this.#pointContainer, this.#pointComponent, RenderPosition.BEFOREEND);
@@ -84,8 +87,16 @@ export default class PointPresenter {
     this.#replaceCardToForm();
   };
 
-  #handleFormSubmit = (point) => {
-    this.#changeData(point);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate = (TripPresenter.currentSortType === SortTipes.DAY && this.#point.startTime !== update.startTime)
+    || (TripPresenter.currentSortType === SortTipes.PRICE && calculatePrice(this.#point.offers, this.#point.basePrice) !== calculatePrice(update.offers, update.basePrice))
+    || (TripPresenter.currentSortType === SortTipes.TIME && (this.#point.endTime - this.#point.startTime) !== (update.endTime - update.startTime));
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
     this.#replaceFormToCard();
   };
 
@@ -96,7 +107,7 @@ export default class PointPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#point, isFavorite: !this.#point.isFavorite},
     );
   };
@@ -105,5 +116,13 @@ export default class PointPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToCard();
     }
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }

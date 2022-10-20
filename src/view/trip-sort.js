@@ -41,6 +41,7 @@ export default class TripSortView extends AbstractView {
     }
 
     this._callback.changeSort(evt.target.dataset.sortType);
+    console.log(evt.target.dataset.sortType)
   };
 
   setChangeSortHandler = (callback) => {

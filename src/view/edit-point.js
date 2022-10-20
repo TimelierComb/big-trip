@@ -254,6 +254,16 @@ export default class EditPointView extends SmartView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCloseHandler);
   };
 
+  setDeleteHandler = (callback) => {
+    this._callback.formDelete = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteHandler);
+  };
+
+  #formDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formDelete(EditPointView.parseStateToData(this._state));
+  };
+
   restoreHandlers = () => {
     this.setCloseHandler(this._callback.formClose);
     this.setSubmitHandler(this._callback.formSubmit);

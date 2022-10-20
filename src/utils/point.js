@@ -14,7 +14,6 @@ export const isPointInFuture = (startTime, endTime) => dayjs(startTime).isSame(d
 
 export const isPointInPast = (startTime, endTime) => dayjs(endTime).isBefore(dayjs(), 'D') || (dayjs(startTime).isBefore(dayjs(), 'D') && dayjs(endTime).isAfter(dayjs(), 'D'));
 
-
 export const generateParameter = (array) => array[getRandomInteger(0, array.length - 1)];
 
 export const convertDate = (time, format) => dayjs(time).format(format);
